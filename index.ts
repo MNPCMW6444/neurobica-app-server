@@ -1,8 +1,7 @@
-var express = require("express");
-var http = require("http");
-var enforce = require("express-sslify");
+import express from "express";
+import enforce from "express-sslify";
 
-var app = express();
+const app = express();
 
 app.use(enforce.HTTPS());
 
