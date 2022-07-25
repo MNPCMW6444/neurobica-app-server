@@ -5,7 +5,7 @@ const app = express();
 app.use(sslRedirect());
 
 app.get("/", (req, res) => {
-  res.send("hello world");
+  res.send("hello brain dead of m");
 });
 
 app.listen(process.env.PORT || 3000);
