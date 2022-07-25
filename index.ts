@@ -5,4 +5,4 @@ app.get("/yoad", (req: any, res: any) => {
   res.send("Hello Brain");
 });
 
-app.listen(6444);
+app.listen(process.env.PORT || 6444);
