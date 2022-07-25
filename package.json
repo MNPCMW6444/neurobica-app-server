@@ -2,11 +2,14 @@
   "name": "neurobica-app-server",
   "version": "1.0.0",
   "description": "Neurobica App Main Server",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node server",
-    "dev": "nodemon server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ."
   },
   "repository": {
     "type": "git",
@@ -17,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/MNPCMW6444/neurobica-app-server/issues"
   },
-  "homepage": "https://github.com/MNPCMW6444/neurobica-app-server#readme"
+  "homepage": "https://github.com/MNPCMW6444/neurobica-app-server#readme",
+  "dependencies": {
+    "ts-node": "^10.9.1"
+  }
 }
