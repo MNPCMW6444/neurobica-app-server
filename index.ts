@@ -1,8 +1,11 @@
-import express from "express";
-const app = express();
+var express = require("express");
+var http = require("http");
+var enforce = require("express-sslify");
 
-app.get("/", (req: any, res: any) => {
-  res.send("Hello Brain");
+var app = express();
+
+app.use(enforce.HTTPS());
+
+http.createServer(app).listen(app.get("port"), function () {
+  console.log("Express server listening on port " + app.get("port"));
 });
-
-app.listen(process.env.PORT || 6444);
