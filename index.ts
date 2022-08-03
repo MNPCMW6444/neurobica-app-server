@@ -5,7 +5,10 @@ const app = express();
 const port = process.env.PORT || 6444;
 
 app.use(sslRedirect());
-app.listen(port, () => console.log(`Server started on port: ${port}`));
+app.listen(
+  port,
+  () => /* console.log(`Server started on port: ${port}`) */ null
+);
 
 app.use(
   cors({
