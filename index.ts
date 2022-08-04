@@ -34,6 +34,7 @@ winston.add(
 );
 
 app.use(sslRedirect());
+app.use(express.json());
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 app.use(
@@ -44,5 +45,5 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.send("hello brain dead of m");
+  res.json({ mes: "hii" });
 });
