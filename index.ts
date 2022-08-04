@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import mongoose, { Connection, ConnectOptions, Mongoose } from "mongoose";
 import winston from "winston";
 import "winston-mongodb";
-import { MongoDBConnectionOptions } from "winston-mongodb";
 const app = express();
 const port = process.env.PORT || 6444;
 
@@ -19,7 +18,7 @@ mongoose.connect(
   } as ConnectOptions,
   (err) => {
     if (err) return console.error(err);
-    console.log("Connected to MongoDB");
+    console.log("Connected to Main MongoDB");
   }
 );
 
@@ -39,11 +38,11 @@ app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 app.use(
   cors({
-    origin: ["https://app.neurobica.online"],
+    origin: ["http://localhost:3000", "https://app.neurobica.online"],
     credentials: true,
   })
 );
 
-app.get("/ads", (req, res) => {
+app.get("/asd", (req, res) => {
   res.json({ mes: "hii" });
 });
