@@ -39,7 +39,7 @@ app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://app.neurobica.online"],
+    origin: ["https://app.neurobica.online"],
     credentials: true,
   })
 );
