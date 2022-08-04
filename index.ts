@@ -53,7 +53,7 @@ app.use(
 app.get("/asd", (req, res) => {
   logger.log({
     level: "info",
-    message: JSON.stringify({ Michael: "Is", ...req }),
+    message: "asdasd" + req.toString(),
   });
   res.json({ mes: "hii" });
 });
