@@ -44,6 +44,6 @@ app.use(
   })
 );
 
-app.get("/asd", (req, res) => {
+app.get("/ads", (req, res) => {
   res.json({ mes: "hii" });
 });
