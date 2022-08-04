@@ -22,7 +22,7 @@ mongoose.connect(
   }
 );
 
-winston.add(
+const mongoTransport = winston.add(
   new winston.transports.MongoDB({
     db: "" + process.env.MONGO_OC,
     options: {
@@ -31,6 +31,13 @@ winston.add(
     },
   })
 );
+
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.json(),
+  defaultMeta: { service: "user-service" },
+  transports: [mongoTransport],
+});
 
 app.use(sslRedirect());
 app.use(express.json());
