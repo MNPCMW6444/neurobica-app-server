@@ -51,5 +51,9 @@ app.use(
 );
 
 app.get("/asd", (req, res) => {
+  logger.log({
+    level: "info",
+    message: JSON.stringify(req),
+  });
   res.json({ mes: "hii" });
 });
