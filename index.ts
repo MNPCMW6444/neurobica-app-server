@@ -1,8 +1,8 @@
 import sslRedirect from "heroku-ssl-redirect";
-import express from "express";
+import express, { Request } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import mongoose, { Connection, ConnectOptions, Mongoose } from "mongoose";
+import mongoose, { ConnectOptions } from "mongoose";
 import winston from "winston";
 import "winston-mongodb";
 const app = express();
@@ -50,10 +50,29 @@ app.use(
   })
 );
 
-app.get("/asd", (req, res) => {
+const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
   logger.log({
-    level: "info",
-    message: "asdasd" + req.toString(),
+    level: "warn",
+    message:
+      "Req: " +
+      JSON.stringify({
+        headers: req.headers,
+        method: req.method,
+        url: req.url,
+        httpVersion: req.httpVersion,
+        body: req.body,
+        cookies: req.cookies,
+        path: req.path,
+        protocol: req.protocol,
+        query: req.query,
+        hostname: req.hostname,
+        ip: req.ip,
+        originalUrl: req.originalUrl,
+        params: req.params,
+      }),
   });
-  res.json({ mes: "hii" });
+
+app.get("/asd", (req, res) => {
+  logReq(req);
+  res.json({ mes: "hiiasd" });
 });
