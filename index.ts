@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
 import winston from "winston";
 import "winston-mongodb";
+import userRouter from "./routers/userRouter";
 const app = express();
 const port = process.env.PORT || 6444;
 
@@ -41,7 +42,6 @@ const logger = winston.createLogger({
 
 app.use(sslRedirect());
 app.use(express.json());
-app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 app.use(
   cors({
@@ -72,7 +72,6 @@ const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
       }),
   });
 
-app.get("/asd", (req, res) => {
-  logReq(req);
-  res.json({ mes: "hiiasd" });
-});
+app.use("/user/", userRouter);
+
+app.listen(port, () => console.log(`Server started on port: ${port}`));
