@@ -6,6 +6,7 @@ const router = express.Router();
 router.post("/loggedIn", async (req, res) => {
   try {
     console.log(req);
+    res.json({yoad:104});
   } catch (err) {
     console.error(err);
     res.status(500).send();

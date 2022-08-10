@@ -5,9 +5,60 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const heroku_ssl_redirect_1 = __importDefault(require("heroku-ssl-redirect"));
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const winston_1 = __importDefault(require("winston"));
+require("winston-mongodb");
+const userRouter_1 = __importDefault(require("./routers/userRouter"));
 const app = (0, express_1.default)();
-app.use((0, heroku_ssl_redirect_1.default)());
-app.get("/", (req, res) => {
-    res.send("hello world");
+const port = process.env.PORT || 6444;
+dotenv_1.default.config();
+mongoose_1.default.connect("" + process.env.MONGO, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}, (err) => {
+    if (err)
+        return console.error(err);
+    console.log("Connected to Main MongoDB");
 });
-app.listen(process.env.PORT || 3000);
+const mongoTransport = winston_1.default.add(new winston_1.default.transports.MongoDB({
+    db: "" + process.env.MONGO_OC,
+    options: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    },
+}));
+const logger = winston_1.default.createLogger({
+    level: "info",
+    format: winston_1.default.format.json(),
+    defaultMeta: { service: "user-service" },
+    transports: [mongoTransport],
+});
+app.use((0, heroku_ssl_redirect_1.default)());
+app.use(express_1.default.json());
+app.use((0, cors_1.default)({
+    origin: ["http://localhost:3000", "https://app.neurobica.online"],
+    credentials: true,
+}));
+const logReq = (req) => logger.log({
+    level: "warn",
+    message: "Req: " +
+        JSON.stringify({
+            headers: req.headers,
+            method: req.method,
+            url: req.url,
+            httpVersion: req.httpVersion,
+            body: req.body,
+            cookies: req.cookies,
+            path: req.path,
+            protocol: req.protocol,
+            query: req.query,
+            hostname: req.hostname,
+            ip: req.ip,
+            originalUrl: req.originalUrl,
+            params: req.params,
+        }),
+});
+app.use("/user/", userRouter_1.default);
+app.listen(port, () => console.log(`Server started on port: ${port}`));
