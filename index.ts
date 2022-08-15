@@ -45,7 +45,12 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://app.neurobica.online"],
+    origin: [
+      "http://localhost:3000",
+      "https://app.neurobica.online",
+      "https://app.flexboxtorchy.com",
+      "https://yoad-main-ui.flexboxtorchy.com",
+    ],
     credentials: true,
   })
 );
