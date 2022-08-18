@@ -11,6 +11,9 @@ const port = process.env.PORT || 6444;
 
 dotenv.config();
 
+let mainDbStatus = false;
+let OcDbStatus = false;
+
 mongoose.connect(
   "" + process.env.MONGO,
   {
@@ -20,25 +23,31 @@ mongoose.connect(
   (err) => {
     if (err) return console.error(err);
     console.log("Connected to Main MongoDB");
+    mainDbStatus = true;
   }
 );
+try {
+  const mongoTransport = winston.add(
+    new winston.transports.MongoDB({
+      db: "" + process.env.MONGO_OC,
+      options: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      },
+    })
+  );
 
-const mongoTransport = winston.add(
-  new winston.transports.MongoDB({
-    db: "" + process.env.MONGO_OC,
-    options: {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    },
-  })
-);
-
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.json(),
-  defaultMeta: { service: "user-service" },
-  transports: [mongoTransport],
-});
+  const logger = winston.createLogger({
+    level: "info",
+    format: winston.format.json(),
+    defaultMeta: { service: "user-service" },
+    transports: [mongoTransport],
+  });
+  OcDbStatus = true;
+} catch (err) {
+  console.log(err);
+  OcDbStatus = false;
+}
 
 app.use(sslRedirect());
 app.use(express.json());
@@ -55,7 +64,7 @@ app.use(
     credentials: true,
   })
 );
-
+/* 
 const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
   logger.log({
     level: "warn",
@@ -76,8 +85,15 @@ const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
         originalUrl: req.originalUrl,
         params: req.params,
       }),
-  });
+  }); */
 
 app.use("/user/", userRouter);
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));
+
+app.use((req, res, next) => {
+  if (mainDbStatus && OcDbStatus) next();
+  else res.status(500).send("Server is down now. Please try again later.");
+});
+
+app.get("/areyoualive", (req, res) => res.json({ answer: "yes" }));
