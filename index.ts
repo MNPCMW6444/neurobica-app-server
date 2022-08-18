@@ -50,6 +50,7 @@ app.use(
       "https://app.neurobica.online",
       "https://app.flexboxtorchy.com",
       "https://yoad-main-ui.flexboxtorchy.com",
+      "https://michael-app.flexboxtorchy.com",
     ],
     credentials: true,
   })
