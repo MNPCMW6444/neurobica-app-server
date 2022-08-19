@@ -64,7 +64,7 @@ app.use(
     credentials: true,
   })
 );
-/* 
+/*
 const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
   logger.log({
     level: "warn",
