@@ -17,12 +17,12 @@ router.post("/signin", async (req, res) => {
         const existingUser = await userModel_1.default.findOne({ email });
         if (!existingUser)
             return res.status(401).json({
-                clientError: "Wrong email or password.",
+                clientError: "Wrong email or password",
             });
         const correctPassword = await bcryptjs_1.default.compare(password, existingUser.passwordHash);
         if (!correctPassword)
             return res.status(401).json({
-                clientError: "Wrong email or password.",
+                clientError: "Wrong email or password",
             });
         const token = jsonwebtoken_1.default.sign({
             id: existingUser._id,
@@ -99,6 +99,19 @@ router.post("/signup", async (req, res) => {
         res
             .status(500)
             .json({ serverError: "Unexpected error occurred in the server" });
+    }
+});
+router.get("signedin", async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        if (!token)
+            return res.status(401).json({ clientMessage: "Unauthorized" });
+        const validatedUser = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        const userId = validatedUser.id;
+        res.json(await userModel_1.default.findById(userId));
+    }
+    catch (err) {
+        return res.status(401).json({ errorMessage: "Unauthorized." });
     }
 });
 exports.default = router;

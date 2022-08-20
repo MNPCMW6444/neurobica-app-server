@@ -1,7 +1,7 @@
 import express from "express";
 import User from "../models/userModel";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { passwordStrength } from "check-password-strength";
 
 const router = express.Router();
@@ -15,7 +15,7 @@ router.post("/signin", async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (!existingUser)
       return res.status(401).json({
-        clientError: "Wrong email or password.",
+        clientError: "Wrong email or password",
       });
 
     const correctPassword = await bcrypt.compare(
@@ -25,7 +25,7 @@ router.post("/signin", async (req, res) => {
 
     if (!correctPassword)
       return res.status(401).json({
-        clientError: "Wrong email or password.",
+        clientError: "Wrong email or password",
       });
 
     const token = jwt.sign(
@@ -114,6 +114,18 @@ router.post("/signup", async (req, res) => {
     res
       .status(500)
       .json({ serverError: "Unexpected error occurred in the server" });
+  }
+});
+
+router.get("signedin", async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ clientMessage: "Unauthorized" });
+    const validatedUser = jwt.verify(token, process.env.JWT_SECRET as string);
+    const userId = (validatedUser as JwtPayload).id;
+    res.json(await User.findById(userId));
+  } catch (err) {
+    return res.status(401).json({ errorMessage: "Unauthorized." });
   }
 });
 
