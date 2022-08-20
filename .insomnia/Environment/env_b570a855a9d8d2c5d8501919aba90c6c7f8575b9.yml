@@ -1,11 +1,11 @@
 _id: env_b570a855a9d8d2c5d8501919aba90c6c7f8575b9
 type: Environment
 parentId: wrk_feabddc03120485cbf296dafad8d2d14
-modified: 1660855195374
+modified: 1660858396645
 created: 1660855195374
 name: Base Environment
 data: {}
-dataPropertyOrder: null
+dataPropertyOrder: {}
 color: null
 isPrivate: false
 metaSortKey: 1660855195374
