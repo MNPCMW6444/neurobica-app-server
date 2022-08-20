@@ -6,6 +6,8 @@ import mongoose, { ConnectOptions } from "mongoose";
 import winston from "winston";
 import "winston-mongodb";
 import userRouter from "./routers/userRouter";
+import cookieParser from "cookie-parser";
+
 const app = express();
 const port = process.env.PORT || 6444;
 
@@ -64,6 +66,9 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(cookieParser());
+
 /*
 const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
   logger.log({
