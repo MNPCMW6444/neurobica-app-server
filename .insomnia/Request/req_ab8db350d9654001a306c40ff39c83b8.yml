@@ -1,0 +1,32 @@
+_id: req_ab8db350d9654001a306c40ff39c83b8
+type: Request
+parentId: wrk_feabddc03120485cbf296dafad8d2d14
+modified: 1660991286962
+created: 1660941312122
+url: http://localhost:6444/user/signup
+name: signup
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"email":"test3@gmail.com",
+    	"fullname":"Test User 3",
+    	"password":"asdASD123%",
+    	"passwordagain":"asdASD123%"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_dec5f11075064ed5ba253c05d74aa235
+authentication: {}
+metaSortKey: -1660855195328
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

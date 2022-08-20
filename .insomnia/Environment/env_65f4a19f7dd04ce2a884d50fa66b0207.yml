@@ -1,0 +1,11 @@
+_id: env_65f4a19f7dd04ce2a884d50fa66b0207
+type: Environment
+parentId: env_b570a855a9d8d2c5d8501919aba90c6c7f8575b9
+modified: 1660858410068
+created: 1660858400575
+name: development
+data: {}
+dataPropertyOrder: {}
+color: null
+isPrivate: false
+metaSortKey: 1660858400575
