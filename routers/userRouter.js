@@ -17,12 +17,12 @@ router.post("/signin", async (req, res) => {
         const existingUser = await userModel_1.default.findOne({ email });
         if (!existingUser)
             return res.status(401).json({
-                errorMessage: "Wrong email or password.",
+                clientError: "Wrong email or password.",
             });
         const correctPassword = await bcryptjs_1.default.compare(password, existingUser.passwordHash);
         if (!correctPassword)
             return res.status(401).json({
-                errorMessage: "Wrong email or password.",
+                clientError: "Wrong email or password.",
             });
         const token = jsonwebtoken_1.default.sign({
             id: existingUser._id,

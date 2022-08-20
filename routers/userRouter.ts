@@ -15,7 +15,7 @@ router.post("/signin", async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (!existingUser)
       return res.status(401).json({
-        errorMessage: "Wrong email or password.",
+        clientError: "Wrong email or password.",
       });
 
     const correctPassword = await bcrypt.compare(
@@ -25,7 +25,7 @@ router.post("/signin", async (req, res) => {
 
     if (!correctPassword)
       return res.status(401).json({
-        errorMessage: "Wrong email or password.",
+        clientError: "Wrong email or password.",
       });
 
     const token = jwt.sign(
