@@ -1,5 +1,5 @@
 import sslRedirect from "heroku-ssl-redirect";
-import express, { Request } from "express";
+import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose, { ConnectOptions } from "mongoose";
@@ -89,13 +89,13 @@ const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
-/* app.use((req, res, next) => {
+app.use((req, res, next) => {
   if (mainDbStatus && OcDbStatus) next();
   else
     res
       .status(500)
       .json({ serverError: "Server is down now. Please try again later." });
-}); */
+});
 
 app.use("/user", userRouter);
 

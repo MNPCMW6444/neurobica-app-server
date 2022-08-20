@@ -58,66 +58,46 @@ router.post("/signin", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
   try {
-    const { email, password, passwordagain } = req.body;
-    if (!email || !password || !passwordagain)
+    const { email, fullname, password, passwordagain } = req.body;
+    if (!email || !fullname || !password || !passwordagain)
       return res.status(400).json({
         clientError: "At least one of the fields are missing",
       });
-    console.log(passwordStrength(password).value);
-    if (parseInt(passwordStrength(password).value) < 2)
+    const passStrength = passwordStrength(password);
+    if (passStrength.id < 2)
       return res.status(400).json({
-        errorMessage:
+        clientError:
           "Password isn't strong enough, the value is" +
           passwordStrength(password).value,
       });
-  } catch (err) {
-    //console.error(err);
-    res
-      .status(500)
-      .json({ serverError: "Unexpected error occurred in the server" });
-  }
-});
-/* 
-router.post("/", async (req, res) => {
-  try {
-    if (password !== passwordVerify)
+    if (password !== passwordagain)
       return res.status(400).json({
-        errorMessage: "Please enter the same twice for verification.",
+        clientError: "Passwords doesn't match",
       });
-
-    // make sure no account exists for this email
-
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({
-        errorMessage: "An account with this email already exists.",
+        clientError: "An account with this email already exists",
       });
-
-    // hash the password
-
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
-
-    // save the user in the database
-
-    const newUser = new User({
+    console.log((await User.find()).length + 1);
+    const savedUser = await new User({
+      serialNumber: (await User.find()).length + 1,
+      activated: false,
+      deleted: false,
       email,
+      fullname,
       passwordHash,
-    });
-
-    const savedUser = await newUser.save();
-
-    // create a JWT token
-
+    }).save();
     const token = jwt.sign(
       {
         id: savedUser._id,
       },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET as string
     );
-
     res
-      .cookie("token", token, {
+      .cookie("jwt", token, {
         httpOnly: true,
         sameSite:
           process.env.NODE_ENV === "development"
@@ -130,8 +110,11 @@ router.post("/", async (req, res) => {
       })
       .send();
   } catch (err) {
-    res.status(500).send();
+    console.error(err);
+    res
+      .status(500)
+      .json({ serverError: "Unexpected error occurred in the server" });
   }
 });
- */
+
 export default router;

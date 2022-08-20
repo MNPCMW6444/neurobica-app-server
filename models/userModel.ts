@@ -2,12 +2,9 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    uid: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
-    active: { type: Boolean, required: true },
+    serialNumber: { type: Number, required: true, unique: true },
+    activated: { type: Boolean, required: true },
+    deleted: { type: Boolean, required: true },
     fullname: {
       type: String,
       required: true,
