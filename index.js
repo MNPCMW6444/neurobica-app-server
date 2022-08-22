@@ -11,6 +11,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const winston_1 = __importDefault(require("winston"));
 require("winston-mongodb");
 const userRouter_1 = __importDefault(require("./routers/userRouter"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 6444;
 dotenv_1.default.config();
@@ -57,6 +58,7 @@ app.use((0, cors_1.default)({
     ],
     credentials: true,
 }));
+app.use((0, cookie_parser_1.default)());
 /*
 const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
   logger.log({
