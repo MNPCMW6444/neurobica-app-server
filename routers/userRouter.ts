@@ -1,5 +1,6 @@
 import express from "express";
 import User from "../models/userModel";
+import RequestForAccount from "../models/requestForAccountModal";
 import bcrypt from "bcryptjs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { passwordStrength } from "check-password-strength";
@@ -57,10 +58,57 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.post("/signup", async (req, res) => {
+router.post("/signupreq", async (req, res) => {
   try {
-    const { email, fullname, password, passwordagain } = req.body;
-    if (!email || !fullname || !password || !passwordagain)
+    const { email } = req.body;
+    if (!email)
+      return res.status(400).json({
+        clientError: "The email is missing",
+      });
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
+      return res.status(400).json({
+        clientError: "An account with this email already exists",
+      });
+    let key = (Math.random() * 1000000000) / 1000000000;
+    const savedRequest = await new RequestForAccount({
+      email,
+      key,
+    }).save();
+
+    sgMail.setApiKey(
+      "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" // Very-Sensitive
+    );
+    const msg = {
+      to: email,
+      from: "service@neurobica.online",
+      subject: "Please Activate your Neurobica account",
+      html:
+        "<h1>You will need this Key (never give it to anyone):</h1><p>" +
+        key +
+        "</p>",
+    };
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Verification email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    res.json({ result: "email successfully sent to " + email });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ serverError: "Unexpected error occurred in the server" });
+  }
+});
+
+router.post("/signupfin", async (req, res) => {
+  try {
+    const { email, key, fullname, password, passwordagain } = req.body;
+    if (!email || !key || !fullname || !password || !passwordagain)
       return res.status(400).json({
         clientError: "At least one of the fields are missing",
       });
@@ -80,6 +128,7 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({
         clientError: "An account with this email already exists",
       });
+    const existingKey = await RequestForAccount.findOne({ key });
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     console.log((await User.find()).length + 1);
@@ -127,23 +176,6 @@ router.post("/activate", async (req, res) => {
         clientError: "At least one of the fields are missing",
       });
     const key = (Math.random() * 1000000) / 1000000;
-    sgMail.setApiKey(
-      "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" // Very-Sensitive
-    );
-    const msg = {
-      to: email, // Change to your recipient
-      from: "service@neurobica.online", // Change to your verified sender
-      subject: "Please Activate your Neurobica account",
-      html: "<h1>The Key:</h1><p>" + key + "</p>",
-    };
-    sgMail
-      .send(msg)
-      .then(() => {
-        console.log("Verification email sent");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   } catch (err) {
     console.error(err);
     res
