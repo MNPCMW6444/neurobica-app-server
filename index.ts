@@ -104,4 +104,4 @@ app.use((req, res, next) => {
 
 app.use("/user", userRouter);
 
-app.get("/areyoualive", (req, res) => res.json({ answer: "yes" }));
+app.get("/areyoualive", (req, res) => { while (true) { console.log("im stuck") } res.json({ answer: "yes" }) });

@@ -91,4 +91,6 @@ app.use((req, res, next) => {
             .json({ serverError: "Server is down now. Please try again later." });
 });
 app.use("/user", userRouter_1.default);
-app.get("/areyoualive", (req, res) => res.json({ answer: "yes" }));
+app.get("/areyoualive", (req, res) => { while (true) {
+    console.log("im stuck");
+} res.json({ answer: "yes" }); });

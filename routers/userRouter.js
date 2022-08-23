@@ -109,10 +109,11 @@ router.post("/activate", async (req, res) => {
             return res.status(400).json({
                 clientError: "At least one of the fields are missing",
             });
-        const key = mail_1.default.setApiKey("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" // Very-Sensitive
+        const key = (Math.random() * 1000000) / 1000000;
+        mail_1.default.setApiKey("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" // Very-Sensitive
         );
         const msg = {
-            to: "founders@neurobica.online",
+            to: email,
             from: "service@neurobica.online",
             subject: "Please Activate your Neurobica account",
             html: "<h1>The Key:</h1><p>" + key + "</p>",
