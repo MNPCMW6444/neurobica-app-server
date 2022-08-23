@@ -70,7 +70,7 @@ router.post("/signupreq", async (req, res) => {
       return res.status(400).json({
         clientError: "An account with this email already exists",
       });
-    let key = (Math.random() * 1000000000) / 1000000000;
+    const key = (Math.random() * 1000000000) / 1000000000;
     const savedRequest = await new RequestForAccount({
       email,
       key,
@@ -129,6 +129,10 @@ router.post("/signupfin", async (req, res) => {
         clientError: "An account with this email already exists",
       });
     const existingKey = await RequestForAccount.findOne({ key });
+    if (!existingKey || existingKey.email !== email)
+      return res.status(400).json({
+        clientError: "The key is wrong",
+      });
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     console.log((await User.find()).length + 1);

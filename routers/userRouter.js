@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const userModel_1 = __importDefault(require("../models/userModel"));
+const requestForAccountModal_1 = __importDefault(require("../models/requestForAccountModal"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const check_password_strength_1 = require("check-password-strength");
@@ -47,10 +48,54 @@ router.post("/signin", async (req, res) => {
             .json({ serverError: "Unexpected error occurred in the server" });
     }
 });
-router.post("/signup", async (req, res) => {
+router.post("/signupreq", async (req, res) => {
     try {
-        const { email, fullname, password, passwordagain } = req.body;
-        if (!email || !fullname || !password || !passwordagain)
+        const { email } = req.body;
+        if (!email)
+            return res.status(400).json({
+                clientError: "The email is missing",
+            });
+        const existingUser = await userModel_1.default.findOne({ email });
+        if (existingUser)
+            return res.status(400).json({
+                clientError: "An account with this email already exists",
+            });
+        const key = (Math.random() * 1000000000) / 1000000000;
+        const savedRequest = await new requestForAccountModal_1.default({
+            email,
+            key,
+        }).save();
+        mail_1.default.setApiKey("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" // Very-Sensitive
+        );
+        const msg = {
+            to: email,
+            from: "service@neurobica.online",
+            subject: "Please Activate your Neurobica account",
+            html: "<h1>You will need this Key (never give it to anyone):</h1><p>" +
+                key +
+                "</p>",
+        };
+        mail_1.default
+            .send(msg)
+            .then(() => {
+            console.log("Verification email sent");
+        })
+            .catch((error) => {
+            console.error(error);
+        });
+        res.json({ result: "email successfully sent to " + email });
+    }
+    catch (err) {
+        console.error(err);
+        res
+            .status(500)
+            .json({ serverError: "Unexpected error occurred in the server" });
+    }
+});
+router.post("/signupfin", async (req, res) => {
+    try {
+        const { email, key, fullname, password, passwordagain } = req.body;
+        if (!email || !key || !fullname || !password || !passwordagain)
             return res.status(400).json({
                 clientError: "At least one of the fields are missing",
             });
@@ -68,6 +113,11 @@ router.post("/signup", async (req, res) => {
         if (existingUser)
             return res.status(400).json({
                 clientError: "An account with this email already exists",
+            });
+        const existingKey = await requestForAccountModal_1.default.findOne({ key });
+        if (!existingKey || existingKey.email !== email)
+            return res.status(400).json({
+                clientError: "The key is wrong",
             });
         const salt = await bcryptjs_1.default.genSalt();
         const passwordHash = await bcryptjs_1.default.hash(password, salt);
@@ -109,22 +159,7 @@ router.post("/activate", async (req, res) => {
             return res.status(400).json({
                 clientError: "At least one of the fields are missing",
             });
-        const key = mail_1.default.setApiKey("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" // Very-Sensitive
-        );
-        const msg = {
-            to: "founders@neurobica.online",
-            from: "service@neurobica.online",
-            subject: "Please Activate your Neurobica account",
-            html: "<h1>The Key:</h1><p>" + key + "</p>",
-        };
-        mail_1.default
-            .send(msg)
-            .then(() => {
-            console.log("Verification email sent");
-        })
-            .catch((error) => {
-            console.error(error);
-        });
+        const key = (Math.random() * 1000000) / 1000000;
     }
     catch (err) {
         console.error(err);
