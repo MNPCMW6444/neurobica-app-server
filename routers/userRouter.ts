@@ -3,6 +3,7 @@ import User from "../models/userModel";
 import bcrypt from "bcryptjs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { passwordStrength } from "check-password-strength";
+import sgMail from "@sendgrid/mail";
 
 const router = express.Router();
 
@@ -96,6 +97,7 @@ router.post("/signup", async (req, res) => {
       },
       process.env.JWT_SECRET as string
     );
+
     res
       .cookie("jwt", token, {
         httpOnly: true,
@@ -109,6 +111,39 @@ router.post("/signup", async (req, res) => {
             : process.env.NODE_ENV === "production" && true,
       })
       .send();
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ serverError: "Unexpected error occurred in the server" });
+  }
+});
+
+router.post("/activate", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(400).json({
+        clientError: "At least one of the fields are missing",
+      });
+    const key = (Math.random() * 1000000) / 1000000;
+    sgMail.setApiKey(
+      "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" // Very-Sensitive
+    );
+    const msg = {
+      to: email, // Change to your recipient
+      from: "service@neurobica.online", // Change to your verified sender
+      subject: "Please Activate your Neurobica account",
+      html: "<h1>The Key:</h1><p>" + key + "</p>",
+    };
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Verification email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   } catch (err) {
     console.error(err);
     res
