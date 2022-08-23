@@ -72,6 +72,8 @@ router.post("/signupreq", async (req, res) => {
       });
     const key = (Math.random() * 1000000000) / 1000000000;
     const savedRequest = await new RequestForAccount({
+      serialNumber: (await RequestForAccount.find()).length + 1,
+
       email,
       key,
     }).save();

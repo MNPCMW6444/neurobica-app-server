@@ -6,7 +6,6 @@ const requestForAccountModal = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
     },
     key: {
       type: Number,

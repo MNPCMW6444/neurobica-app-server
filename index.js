@@ -82,7 +82,7 @@ const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
       }),
   }); */
 app.listen(port, () => console.log(`Server started on port: ${port}`));
-app.use((req, res, next) => {
+app.use((_, res, next) => {
     if (mainDbStatus && OcDbStatus)
         next();
     else
@@ -91,4 +91,4 @@ app.use((req, res, next) => {
             .json({ serverError: "Server is down now. Please try again later." });
 });
 app.use("/user", userRouter_1.default);
-app.get("/areyoualive", (req, res) => res.json({ answer: "yes" }));
+app.get("/areyoualive", (_, res) => res.json({ answer: "yes" }));
