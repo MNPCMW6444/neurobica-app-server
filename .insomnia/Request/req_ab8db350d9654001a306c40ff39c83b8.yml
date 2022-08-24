@@ -1,10 +1,10 @@
 _id: req_ab8db350d9654001a306c40ff39c83b8
 type: Request
 parentId: wrk_feabddc03120485cbf296dafad8d2d14
-modified: 1660991286962
+modified: 1661335414048
 created: 1660941312122
-url: http://localhost:6444/user/signup
-name: signup
+url: http://localhost:6444/user/signupreq
+name: signupreq
 description: ""
 method: POST
 body:
@@ -12,9 +12,7 @@ body:
   text: |-
     {
     	"email":"test3@gmail.com",
-    	"fullname":"Test User 3",
-    	"password":"asdASD123%",
-    	"passwordagain":"asdASD123%"
+
     }
 parameters: []
 headers:
