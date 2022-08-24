@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const userSchema = new mongoose_1.default.Schema({
     serialNumber: { type: Number, required: true, unique: true },
-    activated: { type: Boolean, required: true },
+    deactivated: { type: Boolean, required: true },
     deleted: { type: Boolean, required: true },
     fullname: {
         type: String,

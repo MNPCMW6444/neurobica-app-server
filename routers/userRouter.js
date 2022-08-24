@@ -60,7 +60,7 @@ router.post("/signupreq", async (req, res) => {
             return res.status(400).json({
                 clientError: "An account with this email already exists",
             });
-        const key = (Math.random() * 1000000000) / 1000000000;
+        const key = Math.floor(Math.random() * 1000000);
         const savedRequest = await new requestForAccountModal_1.default({
             serialNumber: (await requestForAccountModal_1.default.find()).length + 1,
             email,
@@ -122,10 +122,9 @@ router.post("/signupfin", async (req, res) => {
             });
         const salt = await bcryptjs_1.default.genSalt();
         const passwordHash = await bcryptjs_1.default.hash(password, salt);
-        console.log((await userModel_1.default.find()).length + 1);
         const savedUser = await new userModel_1.default({
             serialNumber: (await userModel_1.default.find()).length + 1,
-            activated: false,
+            deactivated: false,
             deleted: false,
             email,
             fullname,
