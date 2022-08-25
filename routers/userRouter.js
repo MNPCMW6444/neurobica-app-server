@@ -10,6 +10,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const check_password_strength_1 = require("check-password-strength");
 const mail_1 = __importDefault(require("@sendgrid/mail"));
+const signupreq_1 = __importDefault(require("../emailTemplates/signupreq"));
 const router = express_1.default.Router();
 router.post("/signin", async (req, res) => {
     try {
@@ -72,9 +73,7 @@ router.post("/signupreq", async (req, res) => {
             to: email,
             from: "service@neurobica.online",
             subject: "Please Activate your Neurobica account",
-            html: "<h1>You will need this Key (never give it to anyone):</h1><p>" +
-                key +
-                "</p>",
+            html: (0, signupreq_1.default)(key),
         };
         mail_1.default
             .send(msg)

@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { passwordStrength } from "check-password-strength";
 import sgMail from "@sendgrid/mail";
+import signupreq from "../emailTemplates/signupreq";
 
 const router = express.Router();
 
@@ -85,10 +86,7 @@ router.post("/signupreq", async (req, res) => {
       to: email,
       from: "service@neurobica.online",
       subject: "Please Activate your Neurobica account",
-      html:
-        "<h1>You will need this Key (never give it to anyone):</h1><p>" +
-        key +
-        "</p>",
+      html: signupreq(key),
     };
     sgMail
       .send(msg)
