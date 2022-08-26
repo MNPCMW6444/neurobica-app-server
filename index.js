@@ -16,36 +16,41 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 6444;
 dotenv_1.default.config();
 let mainDbStatus = false;
-let OcDbStatus = false;
-mongoose_1.default.connect("" + process.env.MONGO, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}, (err) => {
-    if (err)
-        return console.error(err);
-    console.log("Connected to Main MongoDB");
-    mainDbStatus = true;
-});
-try {
-    const mongoTransport = winston_1.default.add(new winston_1.default.transports.MongoDB({
-        db: "" + process.env.MONGO_OC,
-        options: {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        },
-    }));
-    const logger = winston_1.default.createLogger({
-        level: "info",
-        format: winston_1.default.format.json(),
-        defaultMeta: { service: "user-service" },
-        transports: [mongoTransport],
+let oCDbStatus = false;
+const connectToDBs = () => {
+    mongoose_1.default.connect("" + process.env.MONGO, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    }, (err) => {
+        if (err)
+            return console.error(err);
+        console.log("Connected to Main MongoDB");
+        mainDbStatus = true;
     });
-    OcDbStatus = true;
-}
-catch (err) {
-    console.log(err);
-    OcDbStatus = false;
-}
+    try {
+        const mongoTransport = winston_1.default.add(new winston_1.default.transports.MongoDB({
+            db: "" + process.env.MONGO_OC,
+            options: {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            },
+        }));
+        const logger = winston_1.default.createLogger({
+            level: "info",
+            format: winston_1.default.format.json(),
+            defaultMeta: { service: "user-service" },
+            transports: [mongoTransport],
+        });
+        oCDbStatus = true;
+    }
+    catch (err) {
+        console.log(err);
+        oCDbStatus = false;
+    }
+    if (!mainDbStatus || !oCDbStatus)
+        setTimeout(connectToDBs, 300000);
+};
+connectToDBs();
 app.use((0, heroku_ssl_redirect_1.default)());
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({
@@ -83,7 +88,7 @@ const logReq = (req: Request<{}, any, any, Record<string, any>>) =>
   }); */
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 app.use((_, res, next) => {
-    if (mainDbStatus && OcDbStatus)
+    if (mainDbStatus && oCDbStatus)
         next();
     else
         res
