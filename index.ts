@@ -51,7 +51,7 @@ const connectToDBs = () => {
     console.log(err);
     oCDbStatus = false;
   }
-  if (!mainDbStatus || !oCDbStatus) setTimeout(connectToDBs, 300000);
+  if (!mainDbStatus || !oCDbStatus) setTimeout(connectToDBs, 180000);
 };
 
 connectToDBs();
