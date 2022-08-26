@@ -1,0 +1,20 @@
+.statusBar {
+  background-color: "#FFF6F2";
+  height: 5vh;
+  width: 100%;
+  top: 0;
+  display: flex;
+  border-bottom: 0.3vh solid #87A0B2;
+}
+
+
+@media only screen and (max-width: 980px) {
+  .statusBar {
+    background-color: "#FFF6F2";
+    height: 5h;
+    width: 100%;
+    top: 0;
+    display: flex;
+    border-bottom: 0.3vh solid #87A0B2;
+  }
+}
