@@ -14,5 +14,7 @@ const requestForAccountModal = new mongoose_1.default.Schema({
         type: Number,
         required: true,
     },
+}, {
+    timestamps: true,
 });
 exports.default = mongoose_1.default.model("requestForAccount", requestForAccountModal);
