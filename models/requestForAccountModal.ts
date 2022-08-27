@@ -1,20 +1,15 @@
 import mongoose from "mongoose";
 
-const requestForAccountModal = new mongoose.Schema(
-  {
-    serialNumber: { type: Number, required: true, unique: true },
-    email: {
-      type: String,
-      required: true,
-    },
-    key: {
-      type: Number,
-      required: true,
-    },
+const requestForAccountModal = new mongoose.Schema({
+  serialNumber: { type: Number, required: true, unique: true },
+  email: {
+    type: String,
+    required: true,
   },
-  {
-    timestamps: true,
-  }
-);
+  key: {
+    type: Number,
+    required: true,
+  },
+});
 
 export default mongoose.model("requestForAccount", requestForAccountModal);
