@@ -48,7 +48,7 @@ const connectToDBs = () => {
         oCDbStatus = false;
     }
     if (!mainDbStatus || !oCDbStatus)
-        setTimeout(connectToDBs, 300000);
+        setTimeout(connectToDBs, 180000);
 };
 connectToDBs();
 app.use((0, heroku_ssl_redirect_1.default)());
@@ -56,8 +56,8 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)({
     origin: [
         "http://localhost:3000",
+        "https://localhost:3000",
         "https://app.neurobica.online",
-        "https://app.flexboxtorchy.com",
         "https://yoad-main-ui.flexboxtorchy.com",
         "https://michael-app.flexboxtorchy.com",
     ],

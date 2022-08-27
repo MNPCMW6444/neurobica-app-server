@@ -151,25 +151,9 @@ router.post("/signupfin", async (req, res) => {
             .json({ serverError: "Unexpected error occurred in the server" });
     }
 });
-router.post("/activate", async (req, res) => {
+router.get("/signedin", async (req, res) => {
     try {
-        const { email, password } = req.body;
-        if (!email || !password)
-            return res.status(400).json({
-                clientError: "At least one of the fields are missing",
-            });
-        const key = (Math.random() * 1000000) / 1000000;
-    }
-    catch (err) {
-        console.error(err);
-        res
-            .status(500)
-            .json({ serverError: "Unexpected error occurred in the server" });
-    }
-});
-router.get("signedin", async (req, res) => {
-    try {
-        const token = req.cookies.token;
+        const token = req.cookies.jwt;
         if (!token)
             return res.status(401).json({ clientMessage: "Unauthorized" });
         const validatedUser = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
@@ -178,6 +162,27 @@ router.get("signedin", async (req, res) => {
     }
     catch (err) {
         return res.status(401).json({ errorMessage: "Unauthorized." });
+    }
+});
+router.get("/signout", async (req, res) => {
+    try {
+        res
+            .cookie("jwt", "", {
+            httpOnly: true,
+            sameSite: process.env.NODE_ENV === "development"
+                ? "lax"
+                : process.env.NODE_ENV === "production" && "none",
+            secure: process.env.NODE_ENV === "development"
+                ? false
+                : process.env.NODE_ENV === "production" && true,
+            expires: new Date(0),
+        })
+            .send();
+    }
+    catch (err) {
+        return res
+            .status(500)
+            .json({ errorMessage: "Server Error nichal todo api" });
     }
 });
 exports.default = router;
